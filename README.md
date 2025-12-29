@@ -99,25 +99,6 @@ http://localhost:3000
 PORT=8080 node server.js
 ```
 
-## 🌟 Ví Dụ Markdown
-
-```markdown
-# Tiêu đề 1
-## Tiêu đề 2
-
-**Chữ đậm** và *Chữ nghiêng*
-
-- Danh sách 1
-- Danh sách 2
-  - Danh sách con
-
-```javascript
-console.log("Hello, World!");
-```
-
-[Link đến Google](https://google.com)
-```
-
 ## 📝 Ghi Chú
 
 - Preview cập nhật tự động khi bạn gõ
@@ -133,7 +114,7 @@ console.log("Hello, World!");
 
 ## 📄 Giấy Phép
 
-ISC License - Xem file package.json
+MIT License - Xem file package.json
 
 ## 🎉 Thành Công!
 
@@ -141,6 +122,6 @@ Nếu bạn thấy ứng dụng hoạt động tốt, hãy tận hưởng viết
 
 ---
 
-**Phiên bản**: 1.0.0  
+**Phiên bản**: 1.0.23  
 **Cập nhật**: 2025-12-29  
 **Trạng thái**: Active Development
