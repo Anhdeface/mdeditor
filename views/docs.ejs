@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-variant: #4f46e5;
+            --secondary: #ec4899;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .docs-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .docs-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .docs-header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .docs-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            transition: gap 0.2s;
+        }
+
+        .back-link:hover {
+            gap: 0.75rem;
+        }
+
+        .back-link i {
+            font-size: 1.2rem;
+        }
+
+        /* Sections */
+        .docs-section {
+            margin-bottom: 3rem;
+        }
+
+        .docs-section h2 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .docs-section h3 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Shortcuts Grid */
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .shortcut-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .shortcut-card {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+        }
+
+        .shortcut-card .shortcut-key {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .shortcut-card .shortcut-action {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .shortcut-card .shortcut-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Author Card */
+        .author-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .author-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .author-info h3 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .author-info p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0.25rem 0 0 0;
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .contact-card .contact-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card .contact-value {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .contact-card a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .contact-card a:hover {
+            opacity: 0.8;
+        }
+
+        .contact-card i {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Category Headers */
+        .category-badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid var(--primary);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .docs-container {
+                padding: 1rem;
+            }
+
+            .docs-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .shortcuts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .author-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .theme-toggle,
+            .back-link {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="docs-container">
+        <a href="/" class="back-link">
+            <i class="ri-arrow-left-line"></i>
+            Back to Editor
+        </a>
+
+        <div class="docs-header">
+            <h1>Documentation</h1>
+            <p>Keyboard Shortcuts & Information</p>
+        </div>
+
+        <!-- Keyboard Shortcuts Section -->
+        <div class="docs-section">
+            <h2>⌨️ Keyboard Shortcuts</h2>
+            
+            <h3>File Operations</h3>
+            <div class="category-badge">File Management</div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + S</div>
+                    <div class="shortcut-action">Save Document</div>
+                    <div class="shortcut-description">Save the markdown content to a file</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + E</div>
+                    <div class="shortcut-action">Export to HTML</div>
+                    <div class="shortcut-description">Export the markdown as an HTML file</div>
+                </div>
+            </div>
+
+            <h3>Text Formatting</h3>
+            <div class="category-badge">Styling</div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + B</div>
+                    <div class="shortcut-action">Bold Text</div>
+                    <div class="shortcut-description">Make selected text bold: <strong>text</strong></div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + I</div>
+                    <div class="shortcut-action">Italic Text</div>
+                    <div class="shortcut-description">Make selected text italic: <em>text</em></div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + `</div>
+                    <div class="shortcut-action">Inline Code</div>
+                    <div class="shortcut-description">Insert inline code: <code>code</code></div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + K</div>
+                    <div class="shortcut-action">Insert Link</div>
+                    <div class="shortcut-description">Create a hyperlink: [text](url)</div>
+                </div>
+            </div>
+
+            <h3>Block Elements</h3>
+            <div class="category-badge">Blocks</div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + C</div>
+                    <div class="shortcut-action">Code Block</div>
+                    <div class="shortcut-description">Insert a code block with syntax highlighting</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + Q</div>
+                    <div class="shortcut-action">Block Quote</div>
+                    <div class="shortcut-description">Create a quoted text block</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + H</div>
+                    <div class="shortcut-action">Heading</div>
+                    <div class="shortcut-description">Insert a heading (H2)</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + L</div>
+                    <div class="shortcut-action">Unordered List</div>
+                    <div class="shortcut-description">Create a bulleted list item</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + N</div>
+                    <div class="shortcut-action">Numbered List</div>
+                    <div class="shortcut-description">Create a numbered list item</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + T</div>
+                    <div class="shortcut-action">Table</div>
+                    <div class="shortcut-description">Insert a markdown table</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + D</div>
+                    <div class="shortcut-action">Horizontal Line</div>
+                    <div class="shortcut-description">Insert a horizontal divider</div>
+                </div>
+            </div>
+
+            <h3>Editor Controls</h3>
+            <div class="category-badge">Controls</div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + R</div>
+                    <div class="shortcut-action">Toggle Render Mode</div>
+                    <div class="shortcut-description">Switch between custom and basic rendering</div>
+                </div>
+                <div class="shortcut-card">
+                    <div class="shortcut-key">Ctrl/Cmd + Shift + M</div>
+                    <div class="shortcut-action">Toggle Theme</div>
+                    <div class="shortcut-description">Switch between light and dark theme</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Author Section -->
+        <div class="author-section">
+            <div class="author-header">
+                <div class="author-avatar">
+                    <i class="ri-user-fill"></i>
+                </div>
+                <div class="author-info">
+                    <h3>Julian Kmut</h3>
+                    <p>Markdown Editor Developer</p>
+                </div>
+            </div>
+
+            <p style="margin-bottom: 1.5rem; font-size: 1rem;">
+                This markdown editor combines modern design with powerful editing capabilities. 
+                Created with attention to user experience and performance.
+            </p>
+
+            <h3 style="color: white; font-size: 1.1rem; margin-bottom: 1rem;">Get in Touch</h3>
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <div class="contact-label">📱 Telegram</div>
+                    <div class="contact-value">
+                        <i class="ri-telegram-2-line"></i>
+                        <a href="https://t.me/wiss0" target="_blank" rel="noopener noreferrer">@wiss0</a>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-label">✉️ Email</div>
+                    <div class="contact-value">
+                        <i class="ri-mail-line"></i>
+                        <a href="mailto:daolequocanh2010@gmail.com">daolequocanh2010@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+        <i class="ri-moon-line"></i>
+    </button>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('docs-theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('docs-theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            const icon = themeToggle.querySelector('i');
+            icon.className = theme === 'light' ? 'ri-moon-line' : 'ri-sun-line';
+        }
+
+        // Smooth scroll for back link
+        document.querySelector('.back-link').addEventListener('click', (e) => {
+            if (window.location.pathname === '/docs') {
+                e.preventDefault();
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>

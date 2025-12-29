@@ -1,0 +1,241 @@
+<!-- 
+ 
+  console.log('----------------------------------------------');
+  console.log('Markdown Editor Server is running'); 
+  console.log('----------------------------------------------');
+  console.log('Developed by Julian Kmut - github.com/anhdeface');
+  console.log('----------------------------------------------');
+  console.log('Telegram: @udp0xxbot');
+  console.log('----------------------------------------------');
+  console.log('Enjoy coding with Markdown!');
+
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <!-- Google Fonts: Nunito (Rounded) & Inter (Clean) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Remix Icon (Modern Icons) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    
+    <!-- Material Design Styles -->
+    <link rel="stylesheet" href="/css/material.css">
+</head>
+<body>
+    <div class="md-container">
+        <!-- Material App Bar -->
+        <header class="md-app-bar animate__animated animate__fadeInDown">
+            <div class="md-app-bar-content">
+                <div class="md-app-bar-title">
+                    <div class="md-app-bar-logo">
+                        <i class="ri-markdown-fill"></i>
+                        <span>MD Editor</span>
+                    </div>
+                    <div class="md-app-bar-subtitle">Pro</div>
+                </div>
+                
+                <div class="md-app-bar-actions">
+                    <!-- Render Mode Chips -->
+                    <div style="display: flex; gap: 8px; margin-right: 16px;">
+                        <div class="md-chip active" id="mdCustomChip">
+                            <i class="ri-palette-line"></i>
+                            Custom
+                        </div>
+                        <div class="md-chip" id="mdBasicChip">
+                            <i class="ri-text"></i>
+                            Basic
+                        </div>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="md-btn md-btn-icon" id="mdThemeToggle" title="Toggle Theme">
+                        <i class="ri-moon-line"></i>
+                    </button>
+                    
+                    <!-- Action Buttons -->
+                    <button class="md-btn md-btn-outlined" id="mdSave" title="Save (Ctrl+S)">
+                        <i class="ri-save-3-line"></i>
+                        <span>Save</span>
+                    </button>
+                    
+                    <button class="md-btn md-btn-outlined" id="mdLoad" title="Load File">
+                        <i class="ri-folder-open-line"></i>
+                        <span>Load</span>
+                    </button>
+                    
+                    <button class="md-btn md-btn-contained" id="mdExport" title="Export HTML (Ctrl+E)">
+                        <i class="ri-download-cloud-2-line"></i>
+                        <span>Export</span>
+                    </button>
+                    
+                    <button class="md-btn md-btn-text" id="mdClear" title="Clear Editor">
+                        <i class="ri-delete-bin-line"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="md-main animate__animated animate__fadeInUp animate__delay-0.5s">
+            <div class="md-editor-container">
+                <!-- Editor Pane -->
+                <div class="md-pane md-editor-pane">
+                    <div class="md-pane-header">
+                        <div class="md-pane-title">
+                            <i class="ri-edit-circle-line"></i>
+                            <span>Editor</span>
+                        </div>
+                        <div class="md-pane-stats">
+                            <span id="mdCharCount">0 chars</span>
+                            <span id="mdWordCount">0 words</span>
+                            <span id="mdLineCount">0 lines</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Material Toolbar -->
+                    <div class="md-toolbar">
+                        <button class="md-shortcut-btn" data-action="bold" title="Bold (Ctrl+B)">
+                            <i class="ri-bold"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="italic" title="Italic (Ctrl+I)">
+                            <i class="ri-italic"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="strikethrough" title="Strikethrough">
+                            <i class="ri-strikethrough"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="heading" title="Heading">
+                            <i class="ri-h-1"></i>
+                        </button>
+                        <div class="md-shortcut-divider"></div>
+                        <button class="md-shortcut-btn" data-action="link" title="Link (Ctrl+K)">
+                            <i class="ri-link"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="image" title="Image">
+                            <i class="ri-image-line"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="code" title="Inline Code">
+                            <i class="ri-code-line"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="codeblock" title="Code Block">
+                            <i class="ri-code-box-line"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="quote" title="Quote">
+                            <i class="ri-double-quotes-l"></i>
+                        </button>
+                        <div class="md-shortcut-divider"></div>
+                        <button class="md-shortcut-btn" data-action="list" title="Bullet List">
+                            <i class="ri-list-unordered"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="numberedlist" title="Numbered List">
+                            <i class="ri-list-ordered"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="checklist" title="Task List">
+                            <i class="ri-checkbox-line"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="hr" title="Horizontal Rule">
+                            <i class="ri-separator"></i>
+                        </button>
+                        <button class="md-shortcut-btn" data-action="table" title="Table">
+                            <i class="ri-table-2"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="md-pane-content">
+                        <textarea 
+                            id="mdEditor" 
+                            class="md-editor"
+                            placeholder="Start typing your markdown here...
+
+# Welcome to Material Editor
+
+## Features
+- **Material Design** interface
+- **Clean aesthetics** with subtle animations
+- **Modern typography** using Google Fonts
+- **Two render modes**: Custom and Basic
+- **Dark/Light theme** support
+- **Keyboard shortcuts** for productivity
+
+## Render Modes
+- **Custom Mode**: Enhanced Material Design styling with beautiful typography and visual effects
+- **Basic Mode**: Clean, minimal styling with beautiful fonts but standard appearance
+
+## Shortcuts
+- **Ctrl+S**: Save document
+- **Ctrl+E**: Export to HTML
+- **Ctrl+B**: Bold text
+- **Ctrl+I**: Italic text
+- **Ctrl+K**: Insert link
+- **Ctrl+R**: Toggle render mode
+
+## Code Example
+```javascript
+function hello() {
+    console.log('Welcome to Material Design!');
+}
+```
+
+> "Design is not just what it looks like and feels like. Design is how it works."
+
+[Visit Material Design](https://material.io)
+
+---
+
+| Feature | Status |
+|---------|--------|
+| Editor | Active |
+| Preview | Live |
+| Export | Ready |
+
+**Experience the beauty of Material Design!**"
+                        ><%= initialContent %></textarea>
+                    </div>
+                </div>
+
+                <!-- Material Divider -->
+                <div class="md-divider" id="mdDivider"></div>
+
+                <!-- Preview Pane -->
+                <div class="md-pane md-preview-pane">
+                    <div class="md-pane-header">
+                        <div class="md-pane-title">
+                            <i class="ri-eye-line"></i>
+                            <span>Preview</span>
+                        </div>
+                        <div class="md-pane-stats">
+                            <span id="renderMode">Custom Render</span>
+                        </div>
+                    </div>
+                    
+                    <div class="md-pane-content">
+                        <div id="mdPreview" class="md-preview md-custom-render">
+                            <!-- Preview content will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="mdFileInput" accept=".md,.txt" style="display: none;">
+
+    <!-- Material Design Application Script -->
+    <script src="/js/material.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <style>
+        .editor-container {
+            height: calc(100vh - 4rem);
+        }
+        .pane {
+            height: 100%;
+            overflow-y: auto;
+        }
+        .preview-pane {
+            padding: 2rem;
+        }
+        .editor-pane textarea {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            resize: none;
+        }
+        .preview-pane h1 { font-size: 2rem; font-weight: bold; margin-bottom: 1rem; color: #111827; }
+        .preview-pane h2 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.75rem; color: #1f2937; }
+        .preview-pane h3 { font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem; color: #1f2937; }
+        .preview-pane p { margin-bottom: 1rem; color: #374151; line-height: 1.625; }
+        .preview-pane ul, .preview-pane ol { margin-bottom: 1rem; margin-left: 1.5rem; color: #374151; }
+        .preview-pane li { margin-bottom: 0.25rem; }
+        .preview-pane blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; font-style: italic; color: #4b5563; margin-bottom: 1rem; }
+        .preview-pane code { background-color: #f3f4f6; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: monospace; }
+        .preview-pane pre { background-color: #111827; color: #f9fafb; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; overflow-x: auto; }
+        .preview-pane pre code { background-color: transparent; padding: 0; }
+        .preview-pane a { color: #2563eb; }
+        .preview-pane a:hover { color: #1d4ed8; text-decoration: underline; }
+        .preview-pane table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .preview-pane th, .preview-pane td { border: 1px solid #d1d5db; padding: 0.75rem; }
+        .preview-pane th { background-color: #f9fafb; font-weight: 600; }
+        .divider {
+            background: linear-gradient(to bottom, transparent, #e5e7eb, transparent);
+            width: 1px;
+            cursor: col-resize;
+        }
+        .divider:hover {
+            background: linear-gradient(to bottom, transparent, #9ca3af, transparent);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-full px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-bold text-gray-900">Markdown Editor</h1>
+                    <span class="text-sm text-gray-500">Live Preview</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="exportHtml" class="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
+                        Export HTML
+                    </button>
+                    <button id="clearBtn" class="px-3 py-1.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="editor-container">
+        <div class="flex h-full">
+            <!-- Editor Pane -->
+            <div class="pane editor-pane w-1/2 bg-white border-r border-gray-200">
+                <div class="p-2 border-b border-gray-200 bg-gray-50">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Markdown</span>
+                        <span id="charCount" class="text-xs text-gray-500">0 characters</span>
+                    </div>
+                </div>
+                <textarea 
+                    id="markdownEditor" 
+                    class="w-full h-full p-4 border-0 focus:outline-none text-gray-700"
+                    placeholder="Start typing your markdown here..."
+                ><%= initialContent %></textarea>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider" id="divider"></div>
+
+            <!-- Preview Pane -->
+            <div class="pane preview-pane w-1/2 bg-white">
+                <div class="p-2 border-b border-gray-200 bg-gray-50 sticky top-0 z-10">
+                    <span class="text-sm font-medium text-gray-700">Preview</span>
+                </div>
+                <div id="preview" class="prose prose-lg max-w-none">
+                    <!-- Preview content will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const editor = document.getElementById('markdownEditor');
+        const preview = document.getElementById('preview');
+        const charCount = document.getElementById('charCount');
+        const exportHtmlBtn = document.getElementById('exportHtml');
+        const clearBtn = document.getElementById('clearBtn');
+        const divider = document.getElementById('divider');
+
+        // Initialize preview
+        updatePreview();
+
+        // Update preview on input
+        editor.addEventListener('input', () => {
+            updatePreview();
+            updateCharCount();
+        });
+
+        function updatePreview() {
+            const markdown = editor.value;
+            fetch('/preview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ markdown })
+            })
+            .then(response => response.json())
+            .then(data => {
+                preview.innerHTML = data.html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateCharCount() {
+            const count = editor.value.length;
+            charCount.textContent = `${count} characters`;
+        }
+
+        // Clear editor
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear the editor?')) {
+                editor.value = '';
+                updatePreview();
+                updateCharCount();
+            }
+        });
+
+        // Export HTML
+        exportHtmlBtn.addEventListener('click', () => {
+            const markdown = editor.value;
+            fetch('/preview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ markdown })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Export</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.6; }
+        h1 { font-size: 2em; font-weight: bold; margin-bottom: 0.5em; }
+        h2 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; }
+        h3 { font-size: 1.2em; font-weight: bold; margin-bottom: 0.5em; }
+        p { margin-bottom: 1em; }
+        code { background: #f4f4f4; padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; }
+        pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #ddd; margin: 0; padding-left: 1em; color: #666; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+        th, td { border: 1px solid #ddd; padding: 0.5em; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    ${data.html}
+</body>
+</html>`;
+                
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'markdown-export.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Resizable divider
+        let isResizing = false;
+        let startX = 0;
+        let startLeftWidth = 0;
+
+        divider.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            startX = e.pageX;
+            const editorPane = document.querySelector('.editor-pane');
+            startLeftWidth = editorPane.offsetWidth;
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const deltaX = e.pageX - startX;
+            const newLeftWidth = startLeftWidth + deltaX;
+            const containerWidth = document.querySelector('.editor-container').offsetWidth;
+            
+            if (newLeftWidth > 200 && newLeftWidth < containerWidth - 200) {
+                const editorPane = document.querySelector('.editor-pane');
+                const previewPane = document.querySelector('.preview-pane');
+                
+                editorPane.style.width = newLeftWidth + 'px';
+                previewPane.style.width = (containerWidth - newLeftWidth) + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+            document.body.style.userSelect = 'auto';
+        });
+
+        // Initialize character count
+        updateCharCount();
+    </script>
+</body>
+</html>
