@@ -138,6 +138,6 @@ http://localhost:3000
 
 ---
 
-**Phiên bản**: 1.0.0  
+**Phiên bản**: 1.0.23  
 **Tác giả**: Julian Kmut (github.com/anhdeface)  
 **Liên hệ**: @udp0xxbot (Telegram)
