@@ -1,7 +1,7 @@
 # 📝 Markdown Editor
 
 Một ứng dụng web đơn giản và hiệu quả để viết, chỉnh sửa và xem trước markdown với giao diện thân thiện.
-
+![DarkTheme](darktheme.png)
 ## ✨ Tính Năng
 
 - 🎨 **Hai giao diện**: Material Design và Classic
